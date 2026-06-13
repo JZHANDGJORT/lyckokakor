@@ -50,23 +50,45 @@ const quotes = [
     "Ibland räcker det att fortsätta."
 ];
 
-// Kopia som vi plockar från
+// Pool som minskar
 let availableQuotes = [...quotes];
 
+// För att undvika samma direkt vid reload
+let lastQuote = localStorage.getItem("lastQuote") || null;
+
 function newQuote() {
-    // Om listan är tom, återställ den
+    const quoteEl = document.getElementById("quote");
+
+    // återställ om tom
     if (availableQuotes.length === 0) {
         availableQuotes = [...quotes];
     }
 
-    // Slumpa index
-    const randomIndex = Math.floor(Math.random() * availableQuotes.length);
+    let quote;
+    let attempts = 0;
 
-    // Hämta citat och ta bort det från poolen
-    const quote = availableQuotes.splice(randomIndex, 1)[0];
+    // undvik direkt repetition
+    do {
+        const randomIndex = Math.floor(Math.random() * availableQuotes.length);
+        quote = availableQuotes[randomIndex];
+        attempts++;
+    } while (quote === lastQuote && attempts < 10);
 
-    document.getElementById("quote").textContent = quote;
+    // ta bort vald
+    availableQuotes = availableQuotes.filter(q => q !== quote);
+
+    // spara senaste
+    lastQuote = quote;
+    localStorage.setItem("lastQuote", quote);
+
+    // fade animation reset
+    quoteEl.classList.remove("show");
+
+    setTimeout(() => {
+        quoteEl.textContent = quote;
+        quoteEl.classList.add("show");
+    }, 150);
 }
 
-// Visa första citatet direkt
+// start
 newQuote();
