@@ -34,45 +34,55 @@ const quotes = [
     "Ibland räcker det att fortsätta."
 ];
 
-// 🥠 Läs kak-ID från URL
+// 🥠 kaka-ID från URL
 const params = new URLSearchParams(window.location.search);
-const deviceId = params.get("id") || "default";
+const deviceId = params.get("id") || "kaka01";
 
 // 📅 dagens datum
 function getDate() {
     return new Date().toISOString().split("T")[0];
 }
 
-// 🔑 unik nyckel per kaka + dag
-function getKey() {
-    return `${deviceId}-${getDate()}`;
+// 🔑 nycklar
+function dailyKey() {
+    return `${deviceId}-daily-${getDate()}`;
 }
 
-// 🧠 hämta stabilt citat för dagen
+function firstKey() {
+    return `${deviceId}-first`;
+}
+
+// 🎲 slumpa citat
+function randomQuote() {
+    return quotes[Math.floor(Math.random() * quotes.length)];
+}
+
+// 🌿 hämta dagens citat (stabilt per kaka + dag)
 function getDailyQuote() {
-    const key = getKey();
+    const key = dailyKey();
     const saved = localStorage.getItem(key);
 
     if (saved) return saved;
 
-    const quote = quotes[Math.floor(Math.random() * quotes.length)];
+    const quote = randomQuote();
     localStorage.setItem(key, quote);
     return quote;
 }
 
-// 🔁 byt citat manuellt (ignorerar dagens sparade)
-function newQuote() {
-    const quoteEl = document.getElementById("quote");
+// 🌱 första skanning-logik
+function handleFirstScan() {
+    const key = firstKey();
+    const isFirst = !localStorage.getItem(key);
 
-    const quote = quotes[Math.floor(Math.random() * quotes.length)];
+    if (isFirst) {
+        localStorage.setItem(key, "seen");
+        return true;
+    }
 
-    // skriv över dagens citat för just denna kaka
-    localStorage.setItem(getKey(), quote);
-
-    updateQuote(quote);
+    return false;
 }
 
-// 🌿 visuell uppdatering (med din fade)
+// 🌿 uppdatera visuellt
 function updateQuote(quote) {
     const quoteEl = document.getElementById("quote");
 
@@ -86,8 +96,23 @@ function updateQuote(quote) {
                 quoteEl.classList.add("show");
             }, 120);
         });
+
     }, 650);
 }
 
-// 🌿 start
-updateQuote(getDailyQuote());
+// 🔁 byt citat manuellt
+function newQuote() {
+    const quote = randomQuote();
+    localStorage.setItem(dailyKey(), quote);
+    updateQuote(quote);
+}
+
+// 🌿 START
+(function init() {
+    const quote = getDailyQuote();
+
+    // första skanning (framtida hook)
+    handleFirstScan();
+
+    updateQuote(quote);
+})();
