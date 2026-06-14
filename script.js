@@ -18,7 +18,7 @@ function getTimeOfDay() {
 
 
 // ===============================
-// 🥠 LYCKOKAKA (oförändrad kärna)
+// 🥠 LYCKOKAKA (perspektiv)
 // ===============================
 const wisdomQuotes = [
     "Varje liten handling formar framtiden.",
@@ -37,28 +37,35 @@ const wisdomQuotes = [
 
 
 // ===============================
-// 🪨 LUGNSTEN (uppdelad i dygnsrytm)
+// 🪨 LUGNSTEN (sorterad i känslotyper)
 // ===============================
-const calmMorningQuotes = [
+
+// 🌿 CALM / CALL (mjuk riktning, start, närvaro)
+const calmCallQuotes = [
     "En ny dag. Du behöver inte ha bråttom in i den.",
     "Börja mjukt.",
     "Det räcker att ta första steget.",
-    "Du behöver inte lösa hela dagen nu."
+    "Du behöver inte lösa hela dagen nu.",
+    "Du får vara här utan att göra något mer."
 ];
 
-const calmDayQuotes = [
+// 🤝 SOCIAL (prestationsoro, relationer, obekvämhet)
+const calmSocialQuotes = [
     "Du behöver inte prestera här.",
     "Du får ta det i din egen takt.",
     "Du behöver inte säga rätt saker.",
-    "Det räcker att du är här."
+    "Det räcker att du är här.",
+    "Du behöver inte vara på ett visst sätt."
 ];
 
-const calmEveningQuotes = [
+// 🪨 RESET (kväll, nedvarvning, släppa dagen)
+const calmResetQuotes = [
     "Dagen är redan tillräcklig.",
     "Du behöver inte lösa något mer idag.",
     "Låt det som varit få vila nu.",
     "Du får släppa taget om resten.",
-    "Du är klar för idag, även om allt inte blev klart."
+    "Du är klar för idag, även om allt inte blev klart.",
+    "Det räcker att dagen får vara som den var."
 ];
 
 
@@ -89,23 +96,17 @@ if (deviceId.startsWith("lugnsten")) {
     const timeOfDay = getTimeOfDay();
     const visitCount = getVisitCount();
 
-    // välj rätt “läge”
+    // välj “känslotyp”
     if (timeOfDay === "morning") {
-        activeQuotes = calmMorningQuotes;
+        activeQuotes = calmCallQuotes;
     } else if (timeOfDay === "evening") {
-        activeQuotes = calmEveningQuotes;
+        activeQuotes = calmResetQuotes;
     } else {
-        activeQuotes = calmDayQuotes;
+        activeQuotes = calmSocialQuotes;
     }
 
-    // subtil “relation över tid”
-    if (visitCount === 1) {
-        subtitleText = "En liten trygghet i fickan";
-    } else if (visitCount < 5) {
-        subtitleText = "En liten trygghet i fickan";
-    } else {
-        subtitleText = "En liten trygghet i fickan";
-    }
+    // stabil identitet (ingen “relationstext” längre)
+    subtitleText = "En liten trygghet i fickan";
 
 } else {
 
