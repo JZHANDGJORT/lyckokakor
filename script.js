@@ -447,7 +447,7 @@ window.addEventListener("DOMContentLoaded", () => {
         document.body.classList.add("hjarta");
         subtitle.textContent = "Till dig själv";
 
-        luckBtn.textContent = "Ett ord till";
+        luckBtn.textContent = "En vänlig tanke till";
         lullBtn.style.display = "none";
 
         updateQuote(getDailyQuote());
